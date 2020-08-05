@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: URL Shortener API
+  description: API documentation.
+  version: 1.0.0
+
+servers:
+  local:
+    url: http://localhost:3000
+
+tags:
+  name: Urls
+  description: Url management
+
+paths:
+  /url:
+    post:
+      summary: Create a short url.
+      tags: [Urls]
+      consumes:
+        - application/json
+      requestBody:
+        description: Create url request object.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UrlRequest'
+            examples:
+              randomSlug:
+                summary: Random slug generated
+                value:
+                  url:
+                    $ref: '#/components/examples/exampleUrl'
+              withSlug:
+                summary: Custom slug generated
+                value:
+                  url:
+                    $ref: '#/components/examples/exampleUrl'
+                  slug:
+                    $ref: '#/components/examples/exampleSlug'
+      responses:
+        '201':
+          description: An object with the slug and the url.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UrlResponse'
+          links:
+            Link GET /{slug}:
+              operationId: getSlug
+              parameters:
+                slug: '$response.body#/slug'
+
+              description: >
+                The `slug` value returned in the response can be used as
+                the `slug` parameter in `GET /{slug}`.
+                (See [endpoint](#/Urls/getSlug))
+
+        '400':
+          $ref: '#/components/responses/400_BadRequest'
+        '500':
+          $ref: '#/components/responses/500_ServerError'
+
+  /{slug}:
+    get:
+      summary: Redirect to url.
+      operationId: getSlug
+      tags: [Urls]
+      consumes:
+        - text/html
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema:
+            type: string
+
+components:
+  schemas:
+    UrlRequest:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+        slug:
+          type: string
+
+    UrlResponse:
+      type: object
+      properties:
+        slug:
+          type: string
+          example:
+            $ref: '#/components/examples/exampleSlug'
+        url:
+          type: string
+          example:
+            $ref: '#/components/examples/exampleUrl'
+
+  examples:
+    exampleSlug: example
+    exampleUrl: https://example.com
+
+  responses:
+    400_BadRequest:
+      description: Bad request error.
+    500_ServerError:
+      description: Internal server error

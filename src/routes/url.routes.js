@@ -18,7 +18,7 @@ router.post(
       }
       slug = slug.toLowerCase();
       const inserted = await urlService.save(slug, url);
-      res.json(inserted);
+      res.status(201).json(inserted);
     } catch (error) {
       next(error);
     }
@@ -29,6 +29,7 @@ router.get('/:slug', async (req, res) => {
   const { slug } = req.params;
   try {
     const url = await urlService.findBySlug(slug);
+
     if (url) {
       res.redirect(url.url);
       return;

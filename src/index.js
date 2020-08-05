@@ -1,11 +1,14 @@
 const config = require('./config');
 const express = require('express');
-const morgan = require('morgan');
 const helmet = require('helmet');
+const morgan = require('morgan');
+const { serve, setup } = require('./utils/swagger');
 
 const app = express();
 app.use(helmet());
 app.use(morgan('common'));
+app.use('/api-docs', serve, setup);
+app.get('/', (_, res) => res.redirect('/api-docs'));
 app.use(express.json());
 app.use(require('./routes/url.routes'));
 

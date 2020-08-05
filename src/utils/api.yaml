@@ -4,16 +4,12 @@ info:
   description: API documentation.
   version: 1.0.0
 
-servers:
-  local:
-    url: http://localhost:3000
-
 tags:
   name: Urls
   description: Url management
 
 paths:
-  /url:
+  /api/url:
     post:
       summary: Create a short url.
       tags: [Urls]
@@ -62,19 +58,40 @@ paths:
         '500':
           $ref: '#/components/responses/500_ServerError'
 
-  /{slug}:
+  /api/url/{slug}:
     get:
       summary: Redirect to url.
       operationId: getSlug
       tags: [Urls]
       consumes:
-        - text/html
+        - application/json
       parameters:
         - in: path
           name: slug
           required: true
           schema:
             type: string
+          examples:
+            not-existing:
+              summary: Not existing slug
+              value: not-existing
+            existing:
+              summary: Existing slug
+              value:
+                $ref: '#/components/examples/exampleSlug'
+      responses:
+        '200':
+          description: An object with the slug and the url.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UrlResponse'
+        '302':
+          description: Server has redirected to url.
+        '404':
+          $ref: '#/components/responses/404_NotFound'
+        '500':
+          $ref: '#/components/responses/500_ServerError'
 
 components:
   schemas:
@@ -107,5 +124,7 @@ components:
   responses:
     400_BadRequest:
       description: Bad request error.
+    404_NotFound:
+      description: Not found error.
     500_ServerError:
       description: Internal server error

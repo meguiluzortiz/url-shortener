@@ -5,7 +5,7 @@ const { nanoid } = require('nanoid');
 const { urlService } = require('../services/url.service');
 
 router.post(
-  '/url',
+  '/',
   validate({
     shape: postUrlSchema,
     path: 'body',
@@ -25,19 +25,20 @@ router.post(
   }
 );
 
-router.get('/:slug', async (req, res) => {
+router.get('/:slug', async (req, res, next) => {
   const { slug } = req.params;
   try {
-    const url = await urlService.findBySlug(slug);
+    const existing = await urlService.findBySlug(slug);
 
-    if (url) {
-      res.redirect(url.url);
-      return;
+    if (!existing) {
+      const error = new Error(`Slug \'${slug}\' not found.`);
+      error.status = 404;
+      throw error;
     }
 
-    res.redirect(`/?error=${slug} not found`);
+    res.json({ slug, url: existing.url });
   } catch (error) {
-    res.redirect(`/?error=Link not found`);
+    next(error);
   }
 });
 

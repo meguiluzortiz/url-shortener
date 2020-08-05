@@ -1,0 +1,12 @@
+# SHORT URL
+### Create short url
+POST https://url-shortener.meguiluzortiz.vercel.app/url
+Content-Type: application/json
+
+{
+    "slug": "example",
+    "url": "http://example.com"
+}
+
+### Get long url back
+GET https://url-shortener.meguiluzortiz.vercel.app/example

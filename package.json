@@ -6,6 +6,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "12.x"
+  },
   "scripts": {
     "start": "node src/index.js",
     "start:dev": "DEBUG=mongo:*,monk:* nodemon src/index.js"

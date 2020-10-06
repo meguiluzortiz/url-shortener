@@ -4,7 +4,7 @@ API to make short urls.
 
 ## Live demo
 
-[Url Shortener](https://sleepy-brushlands-54298.herokuapp.com/)
+[Url Shortener](https://meguiluzortiz-urlshortener.herokuapp.com/)
 
 ## Environment variables
 
